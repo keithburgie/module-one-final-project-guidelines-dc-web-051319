@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20190528185138) do
+ActiveRecord::Schema.define(version: 20190528194542) do
 
-  create_table "owner", force: :cascade do |t|
+  create_table "owners", force: :cascade do |t|
     t.string  "name"
     t.integer "zip_code"
     t.string  "kind"

@@ -17,13 +17,13 @@ require_relative "../config/environment.rb"
 # wilke.doctors << turk
 # wilke.doctors << jd
 
-owner1 = Owner.find_or_create_by(name: "Keith", zip_code: 23223, kind: "Person")
-owner2 = Owner.find_or_create_by(name: "Natany", zip_code: 20002, kind: "Person")
-owner3 = Owner.find_or_create_by(name: "Animal Shelter", zip_code: 20002, kind: "Shelter")
+owner1 = Owner.find_or_create_by({name: "Keith", zip_code: 23223, kind: "Person"})
+owner2 = Owner.find_or_create_by({name: "Natany", zip_code: 20002, kind: "Person"})
+owner3 = Owner.find_or_create_by({name: "Animal Shelter", zip_code: 20002, kind: "Shelter"})
 
-pet1 = Pet.find_or_create_by(name: "", breed: "", age: "", status: "", color: "", size: "", fee: "", bio: "", gender: "", species: "")
+pet1 = Pet.find_or_create_by({name: "", breed: "", age: "", status: "", color: "", size: "", fee: "", bio: "", gender: "", species: ""})
 
-pet_owner1 = PetOwner.find_or_create_by(1, 1, 1)
+pet_owner1 = PetOwner.find_or_create_by({pet: pet1, owner: owner1, current?: true})
 
 binding.pry
 0
