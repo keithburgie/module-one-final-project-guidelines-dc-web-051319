@@ -1,15 +1,5 @@
 require_relative "../config/environment.rb"
 
-# sacred = Hospital.find_or_create_by(name: "Sacred Heart")
-
-# jd = Doctor.find_or_create_by(name: "John Dorian",
-#     specialty: "Internal Medicine",
-#     hospital_id: sacred.id)
-# eliot = Doctor.find_or_create_by(name: "Eliot Reid", specialty: "Endocrinology",
-#     hospital: sacred)
-# turk = Doctor.find_or_create_by(name: "Chris Turk", specialty: "Surgery",
-#     hospital: sacred)
-
 # wilke = Patient.find_or_create_by(name: "Mrs Wilke")
 # johnny = Patient.find_or_create_by(name: "Johnny the Tackling Alzheimer's Patient")
 # ben = Patient.find_or_create_by(name: "Ben Sullivan")
@@ -29,9 +19,6 @@ pet5 = Pet.find_or_create_by({name: "Pepsi", breed: "dachshund", age: "1", statu
 pet6 = Pet.find_or_create_by({name: "Cheese", breed: "dachshund", age: "1", status: "ready for adoption", color: "black", size: "small", fee: "50", bio: "Lorem ipsum dolor sit amet.", gender: "male", species: "canine"})
 pet7 = Pet.find_or_create_by({name: "Selfie", breed: "dachshund", age: "1", status: "ready for adoption", color: "black", size: "small", fee: "50", bio: "Lorem ipsum dolor sit amet.", gender: "female", species: "canine"})
 pet8 = Pet.find_or_create_by({name: "Refri", breed: "dachshund", age: "1", status: "ready for adoption", color: "brown", size: "small", fee: "50", bio: "Lorem ipsum dolor sit amet.", gender: "male", species: "canine"})
-
-
-
 
 pet_owner1 = PetOwner.find_or_create_by({pet: pet1, owner: owner1, current?: true})
 
