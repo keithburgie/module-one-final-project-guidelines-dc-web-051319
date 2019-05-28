@@ -7,9 +7,9 @@ require_relative "../config/environment.rb"
 # wilke.doctors << turk
 # wilke.doctors << jd
 
-owner1 = Owner.find_or_create_by({name: "Keith", zip_code: 23223, kind: "Person"})
-owner2 = Owner.find_or_create_by({name: "Natany", zip_code: 20002, kind: "Person"})
-owner3 = Owner.find_or_create_by({name: "Animal Shelter", zip_code: 20002, kind: "Shelter"})
+owner1 = Owner.find_or_create_by({name: "Keith", email: "krburgie@gmail.com", zip_code: 23223, kind: "Person"})
+owner2 = Owner.find_or_create_by({name: "Natany", email: "natanycaxeta@icloud.com", zip_code: 20002, kind: "Person"})
+owner3 = Owner.find_or_create_by({name: "Animal Shelter", email: "info@animalshelter.com", zip_code: 20002, kind: "Shelter"})
 
 pet1 = Pet.find_or_create_by({name: "Bob", breed: "mutt", age: "3", status: "ready for adoption", color: "black", size: "medium", fee: "50", bio: "Lorem ipsum dolor sit amet.", gender: "male", species: "canine"})
 pet2 = Pet.find_or_create_by({name: "Ruby", breed: "persa", age: "10", status: "ready for adoption", color: "brown", size: "medium", fee: "50", bio: "Lorem ipsum dolor sit amet.", gender: "female", species: "feline"})

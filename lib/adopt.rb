@@ -3,7 +3,7 @@ require 'tty-prompt'
 def welcome
     puts "Welcome to (Shelter Name)"
 
-    # What's your name?
+    # What's your email address?
         # find or create user based on answer
             # if owner exists : move on to reason for visit
             # if owner does not exist : ask for more information and create new Owner from it
