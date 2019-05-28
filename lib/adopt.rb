@@ -2,11 +2,17 @@ require 'tty-prompt'
 
 def welcome
     puts "Welcome to (Shelter Name)"
+
+    # What's your name?
+        # find or create user based on answer
+            # if owner exists : move on to reason for visit
+            # if owner does not exist : ask for more information and create new Owner from it
+                # :name = name, :zip_code = zip_code, :kind = "Person"
 end
 
 def reason_for_visit
     prompt = TTY::Prompt.new
-    greeting = 'How can we help you today?'
+    greeting = "How can we help you today?"
     adopt = "I'm here to adopt."
     surrender = "I have an animal to surrender."
     choices = [adopt, surrender]
