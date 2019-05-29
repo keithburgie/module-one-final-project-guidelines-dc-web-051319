@@ -1,39 +1,4 @@
-require 'tty-prompt'
 
-def welcome
-    puts "Welcome to (Shelter Name)"
-
-    # What's your email address?
-        # find or create user based on answer
-            # if owner exists : move on to reason for visit
-            # if owner does not exist : ask for more information and create new Owner from it
-                # :name = name, :zip_code = zip_code, :kind = "Person"
-end
-
-def reason_for_visit
-    prompt = TTY::Prompt.new
-    greeting = "How can we help you today?"
-    adopt = "I'm here to adopt."
-    surrender = "I have an animal to surrender."
-    choices = [adopt, surrender]
-    reason = prompt.select(greeting, choices)
-    puts "Reason = #{reason}"
-    if reason == adopt
-        adopt_pets
-    elsif reason == surrender
-        surrender_pets
-    end
-end
-
-reason_for_visit
-
-def adopt_pets
-end
-
-def surrender_pets
-    puts "Sorry, we're full!"
-    reason_for_visit
-end
 
 # If reason == adopt
 # Ask: "What type of animal?" : Feline, Canine
