@@ -18,6 +18,21 @@ def reason_for_visit
     choices = [adopt, surrender]
     reason = prompt.select(greeting, choices)
     puts "Reason = #{reason}"
+    if reason == adopt
+        adopt_pets
+    elsif reason == surrender
+        surrender_pets
+    end
+end
+
+reason_for_visit
+
+def adopt_pets
+end
+
+def surrender_pets
+    puts "Sorry, we're full!"
+    reason_for_visit
 end
 
 # If reason == adopt
