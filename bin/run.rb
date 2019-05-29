@@ -62,46 +62,42 @@ def build_new_adoptee(adoptee)
         name = gets.chomp
         adoptee.name = name
         adoptee.save
-    puts "What's your zip code?"
-        zip = gets.chomp
-        adoptee.zip_code = zip
-        adoptee.save
 end
 
 def greet_known_adoptee(adoptee)
     puts "Hi, #{adoptee.name}! Good to see you again."
 end
 
-def animal_type
-    prompt = TTY::Prompt.new
-    animal_type_select = "What type of animal are you looking for?"
-    choices = ["Search for cats", "Search for dogs", "Search other", "All pets"]
-    select_animal_kind = prompt.select(animal_type_select, choices)
+# def animal_type
+#     prompt = TTY::Prompt.new
+#     animal_type_select = "What type of animal are you looking for?"
+#     choices = ["Search for cats", "Search for dogs", "Search other", "All pets"]
+#     select_animal_kind = prompt.select(animal_type_select, choices)
 
-    # This retrieves ALL PETS
-    # we only want to show pets that are IN the shelter
+#     # This retrieves ALL PETS
+#     # we only want to show pets that are IN the shelter
 
-    if select_animal_kind == choices[0] #cats
-        pets = []
-        Pet.all.where(species: "feline").each_with_index {|pet, index| pets << list_animals(pet, index)}
-        animal_select(pets)
+#     if select_animal_kind == choices[0] #cats
+#         pets = []
+#         Pet.all.where(species: "feline").each_with_index {|pet, index| pets << list_animals(pet, index)}
+#         animal_select(pets)
 
-    elsif select_animal_kind == choices[1] #dogs
-        pets = []
-        Pet.all.where(species: "canine").each_with_index {|pet, index| pets << list_animals(pet, index)}
-        animal_select(pets)
+#     elsif select_animal_kind == choices[1] #dogs
+#         pets = []
+#         Pet.all.where(species: "canine").each_with_index {|pet, index| pets << list_animals(pet, index)}
+#         animal_select(pets)
 
-    elsif select_animal_kind == choices[2] #other
-        pets = []
-        Pet.all.where.not(species: ["feline","canine"]).each_with_index {|pet, index| pets << list_animals(pet, index)}
-        animal_select(pets)
+#     elsif select_animal_kind == choices[2] #other
+#         pets = []
+#         Pet.all.where.not(species: ["feline","canine"]).each_with_index {|pet, index| pets << list_animals(pet, index)}
+#         animal_select(pets)
 
-    else #all pets
-        pets = []
-        Pet.all.each_with_index {|pet, index| pets << list_animals(pet, index)}
-        animal_select(pets)
-    end
-end
+#     else #all pets
+#         pets = []
+#         Pet.all.each_with_index {|pet, index| pets << list_animals(pet, index)}
+#         animal_select(pets)
+#     end
+# end
 
 def list_animals(pet, index)
     # Choose a pet to see bio and have the option to adopt
@@ -115,10 +111,6 @@ def animal_select(pets)
     pet_selection = prompt.select(header, pets)
 end
 
-welcome
-#here_to_adopt_pet
-
-##### APAGAR ######
 def animal_type
   prompt = TTY::Prompt.new
   animal_type_select = "What type of animal are you looking for?"
@@ -126,45 +118,44 @@ def animal_type
   select_animal_kind = prompt.select(animal_type_select, choices)
 
   if select_animal_kind == choices[0] #cats
-    animals_shelter_cats = get_animals("feline").collect do |pet_owner|
-      pet_owner.pet.name
-    end
+    animals_shelter_cats = get_animals("feline").collect {|pet_owner| pet_owner.pet.name}
     p animals_shelter_cats
 
   elsif select_animal_kind == choices[1] #dogs
-    animals_shelter_dogs = get_animals("canine").collect do |pet_owner|
-      pet_owner.pet.name
-    end
+    animals_shelter_dogs = get_animals("canine").collect {|pet_owner| pet_owner.pet.name}
     p animals_shelter_dogs
 
   elsif select_animal_kind == choices[2] #other
-    puts Pet.all.where.not(species: ["feline","canine"]).collect {|pet| pet.name}
+    puts Pet.all.where.not(species: ["feline","canine"]).collect {|pet_owner| pet_owner.pet.name}
 
   else #show all pets
-    puts Pet.all.collect {|pet| pet.name}
+    puts Pet.all.collect {|pet_owner| pet_owner.pet.name}
+
   end
+
+end
 
 
 #################################################################################
 def shelter_animals #checking if the animal have the shelter as owner
-  pets_shelter = PetOwner.all.select do |pet_owner|
-     if pet_owner.owner.kind == "Shelter"
-        pet_owner
+    pets_shelter = PetOwner.all.select do |pet_owner|
+        if pet_owner.owner.kind == "Shelter"
+            pet_owner
+        end
     end
-  end
 end
 
 def get_animals(pet_species)
-  if pet_species == "feline"
-    shelter_animals.select do |pet_owner|
-      pet_owner.pet.species == "feline"
+    if pet_species == "feline"
+        shelter_animals.select do |pet_owner|
+            pet_owner.pet.species == "feline"
+        end
+    elsif pet_species == "canine"
+        shelter_animals.select do |pet_owner|
+            pet_owner.pet.species == "canine"
+        end  
     end
-  elsif pet_species == "canine"
-    shelter_animals.select do |pet_owner|
-      pet_owner.pet.species == "canine"
-    end  
-  end
 end
 
-end
-animal_type
+welcome
+#animal_type
