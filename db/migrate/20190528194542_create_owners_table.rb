@@ -3,7 +3,6 @@ class CreateOwnersTable < ActiveRecord::Migration[5.0]
     create_table :owners do |t|
       t.string :name
       t.string :email
-      t.integer :zip_code
       t.string :kind
     end
   end

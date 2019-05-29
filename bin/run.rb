@@ -72,7 +72,6 @@ def greet_known_adoptee(adoptee)
     puts "Hi, #{adoptee.name}! Good to see you again."
 end
 
-<<<<<<< HEAD
 def animal_type
     prompt = TTY::Prompt.new
     animal_type_select = "What type of animal are you looking for?"
@@ -117,7 +116,6 @@ def animal_select(pets)
 end
 
 welcome
-=======
 #here_to_adopt_pet
 
 ##### APAGAR ######
@@ -170,4 +168,3 @@ end
 
 end
 animal_type
->>>>>>> natany

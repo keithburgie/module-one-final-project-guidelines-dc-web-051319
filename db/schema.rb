@@ -13,10 +13,9 @@
 ActiveRecord::Schema.define(version: 20190528194542) do
 
   create_table "owners", force: :cascade do |t|
-    t.string  "name"
-    t.string  "email"
-    t.integer "zip_code"
-    t.string  "kind"
+    t.string "name"
+    t.string "email"
+    t.string "kind"
   end
 
   create_table "pet_owners", force: :cascade do |t|
