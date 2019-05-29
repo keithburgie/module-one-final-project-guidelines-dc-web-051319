@@ -34,6 +34,7 @@ def here_to_adopt_pet
     email_address = gets.chomp
     adoptee = Owner.find_or_create_by({email: email_address, kind: "Person"})
     find_or_create_adoptee(adoptee)
+    adoption_type
 end
 
 def adoption_type
@@ -73,40 +74,31 @@ def greet_known_adoptee(adoptee)
     puts "Hi, #{adoptee.name}! Good to see you again."
 end
 
-<<<<<<< HEAD
-binding.pry
-here_to_adopt_pet
-=======
+def list_animals(pet, index)
+    # Create new selectable list of pets
+    # Choose a pet to see bio and have the option to adopt
+    # Have an option to go back to list
+    "#{pet.species.capitalize} ##{index+1}: #{pet.name}, a #{pet.color} #{pet.age}-year-old #{pet.gender} #{pet.breed}"
+end
 
-
-#here_to_adopt_pet
-
-##### APAGAR ######
 def animal_type
   prompt = TTY::Prompt.new
   animal_type_select = "What type of animal are you looking for?"
   choices = ["Search for cats", "Search for dogs", "Search other", "All pets"]
   select_animal_kind = prompt.select(animal_type_select, choices)
 
-  if select_animal_kind == choices[0] #cats
-      puts Pet.all.where(species: "feline").collect {|pet| pet.name}
-      #puts Pet.name
+    if select_animal_kind == choices[0] #cats
+        Pet.all.where(species: "feline").each_with_index {|pet, index| puts list_animals(pet, index)}
 
+    elsif select_animal_kind == choices[1] #dogs
+        Pet.all.where(species: "canine").each_with_index {|pet, index| puts list_animals(pet, index)}
 
-  elsif select_animal_kind == choices[1] #dogs
-      puts Pet.all.where(species: "canine").collect {|pet| pet.name}
-  elsif select_animal_kind == choices[2] #other
-      puts Pet.all.where.not(species: ["feline","canine"]).collect {|pet| pet.name}
-    else
-      #show all pets
-      puts Pet.all.collect {|pet| pet.name}
-  end
+    elsif select_animal_kind == choices[2] #other
+        Pet.all.where.not(species: ["feline","canine"]).each_with_index {|pet, index| puts list_animals(pet, index)}
+
+    else #all pets
+        Pet.all.each_with_index {|pet, index| puts list_animals(pet, index)}
+    end
 end
 
-
-## aqui ##
-animal_type
-## aqui ##
-
-##### APAGAR #######
->>>>>>> natany
+welcome
