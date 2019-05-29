@@ -32,31 +32,45 @@ def here_to_adopt_pet
     greet_adoptee
     email_address = gets.chomp
     adoptee = Owner.find_or_create_by({email: email_address, kind: "Person"})
-    #binding.pry
-    if adoptee.name
-        greet_known_adoptee(adoptee)
-    else
-        build_new_adoptee(adoptee)
-    end
+    find_or_create_adoptee(adoptee)
+end
+
+def adoption_type
+    animal_type
 end
 
 def greet_adoptee
     puts "Great! First, what is your email address?"
 end
 
+def 
+
 def collect_adoptee_info
     gets.chomp
 end
 
+def find_or_create_adoptee(adoptee)
+    if adoptee.name #Adoptee known if they have a name
+        greet_known_adoptee(adoptee)
+    else #Adoptee is not known if no name found
+        build_new_adoptee(adoptee)
+    end
+end
+
 def build_new_adoptee(adoptee)
     puts "Hey, you're new here! What's your name?"
-    adoptee.name = gets.chomp
+        name = gets.chomp
+        adoptee.name = name
+        adoptee.save
     puts "What's your zip code?"
-    adoptee.zip_code = gets.chomp
+        zip = gets.chomp
+        adoptee.zip_code = zip
+        adoptee.save
 end
 
 def greet_known_adoptee(adoptee)
-    puts "Hello, #{adoptee.name}! Good to see you again."
+    puts "Hi, #{adoptee.name}! Good to see you again."
 end
 
+binding.pry
 here_to_adopt_pet
