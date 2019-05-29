@@ -68,49 +68,6 @@ def greet_known_adoptee(adoptee)
     puts "Hi, #{adoptee.name}! Good to see you again."
 end
 
-# def animal_type
-#     prompt = TTY::Prompt.new
-#     animal_type_select = "What type of animal are you looking for?"
-#     choices = ["Search for cats", "Search for dogs", "Search other", "All pets"]
-#     select_animal_kind = prompt.select(animal_type_select, choices)
-
-#     # This retrieves ALL PETS
-#     # we only want to show pets that are IN the shelter
-
-#     if select_animal_kind == choices[0] #cats
-#         pets = []
-#         Pet.all.where(species: "feline").each_with_index {|pet, index| pets << list_animals(pet, index)}
-#         animal_select(pets)
-
-#     elsif select_animal_kind == choices[1] #dogs
-#         pets = []
-#         Pet.all.where(species: "canine").each_with_index {|pet, index| pets << list_animals(pet, index)}
-#         animal_select(pets)
-
-#     elsif select_animal_kind == choices[2] #other
-#         pets = []
-#         Pet.all.where.not(species: ["feline","canine"]).each_with_index {|pet, index| pets << list_animals(pet, index)}
-#         animal_select(pets)
-
-#     else #all pets
-#         pets = []
-#         Pet.all.each_with_index {|pet, index| pets << list_animals(pet, index)}
-#         animal_select(pets)
-#     end
-# end
-
-def list_animals(pet, index)
-    # Choose a pet to see bio and have the option to adopt
-    # Have an option to go back to list
-    "#{pet.species.capitalize} ##{index+1}: #{pet.name}, a #{pet.color} #{pet.age}-year-old #{pet.gender} #{pet.breed.capitalize}"
-end
-
-def animal_select(pets)
-    prompt = TTY::Prompt.new
-    header = "Available Pets:"
-    pet_selection = prompt.select(header, pets)
-end
-
 def animal_type
   prompt = TTY::Prompt.new
   animal_type_select = "What type of animal are you looking for?"
@@ -118,21 +75,48 @@ def animal_type
   select_animal_kind = prompt.select(animal_type_select, choices)
 
   if select_animal_kind == choices[0] #cats
-    animals_shelter_cats = get_animals("feline").collect {|pet_owner| pet_owner.pet.name}
-    p animals_shelter_cats
+    pets = []
+    get_animals("feline").each_with_index {|pet_owner, index| pets << list_animals(pet_owner, index)}
+    animal_select(pets)
 
   elsif select_animal_kind == choices[1] #dogs
-    animals_shelter_dogs = get_animals("canine").collect {|pet_owner| pet_owner.pet.name}
-    p animals_shelter_dogs
+    pets = []
+    get_animals("canine").each_with_index {|pet_owner, index| pets << list_animals(pet_owner, index)}
+    animal_select(pets)
 
   elsif select_animal_kind == choices[2] #other
-    puts Pet.all.where.not(species: ["feline","canine"]).collect {|pet_owner| pet_owner.pet.name}
+    pets = []
+    get_animals("other").each_with_index {|pet_owner, index| pets << list_animals(pet_owner, index)}
+    animal_select(pets)
 
+    #NOT WORKING
   else #show all pets
-    puts Pet.all.collect {|pet_owner| pet_owner.pet.name}
-
+    pets = []
+    get_animals("all").each_with_index {|pet_owner, index| pets << list_animals(pet_owner, index)}
+    animal_select(pets)
   end
+end
 
+def list_animals(pet_owner, index)
+    # Choose a pet to see bio and have the option to adopt
+    # Have an option to go back to list
+    emoji = ""
+    if pet_owner.pet.species == "feline"
+        emoji = "🐱"
+    elsif pet_owner.pet.species == "canine"
+        emoji = "🐶"
+    elsif pet_owner.pet.species == "n. hollandicus"
+        emoji = "🐥"
+    end
+    #"#{pet_owner.pet.species.capitalize} ##{index+1}: #{pet_owner.pet.name}, a #{pet_owner.pet.color} #{pet_owner.pet.age}-year-old #{pet_owner.pet.gender} #{pet_owner.pet.breed.capitalize}"
+    "#{emoji} #{pet_owner.pet.name.capitalize}, a #{pet_owner.pet.color} #{pet_owner.pet.age}-year-old #{pet_owner.pet.gender} #{pet_owner.pet.breed.capitalize}"
+
+end
+
+def animal_select(pets)
+    prompt = TTY::Prompt.new
+    header = "Available Pets:"
+    pet_selection = prompt.select(header, pets)
 end
 
 
@@ -148,14 +132,27 @@ end
 def get_animals(pet_species)
     if pet_species == "feline"
         shelter_animals.select do |pet_owner|
+            #show felines
             pet_owner.pet.species == "feline"
         end
     elsif pet_species == "canine"
         shelter_animals.select do |pet_owner|
+            #show canines
             pet_owner.pet.species == "canine"
-        end  
+        end
+    elsif pet_species == "other"
+        shelter_animals.select do |pet_owner|
+            #show pets besides felines or canines
+            pet_owner.pet.species != "feline" && pet_owner.pet.species != "canine"
+        end
+    else
+        shelter_animals.select do |pet_owner|
+            #show all available pets
+            pet_owner.pet
+        end
     end
 end
 
+#binding.pry
 welcome
 #animal_type
