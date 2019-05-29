@@ -89,7 +89,6 @@ def animal_type
     get_animals("other").each_with_index {|pet_owner, index| pets << list_animals(pet_owner, index)}
     animal_select(pets)
 
-    #NOT WORKING
   else #show all pets
     pets = []
     get_animals("all").each_with_index {|pet_owner, index| pets << list_animals(pet_owner, index)}
