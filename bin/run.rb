@@ -1,5 +1,6 @@
 require_relative '../config/environment'
 require 'tty-prompt'
+require'pry'
 
 def welcome
     puts "Welcome to (Shelter Name)"
@@ -72,5 +73,40 @@ def greet_known_adoptee(adoptee)
     puts "Hi, #{adoptee.name}! Good to see you again."
 end
 
+<<<<<<< HEAD
 binding.pry
 here_to_adopt_pet
+=======
+
+
+#here_to_adopt_pet
+
+##### APAGAR ######
+def animal_type
+  prompt = TTY::Prompt.new
+  animal_type_select = "What type of animal are you looking for?"
+  choices = ["Search for cats", "Search for dogs", "Search other", "All pets"]
+  select_animal_kind = prompt.select(animal_type_select, choices)
+
+  if select_animal_kind == choices[0] #cats
+      puts Pet.all.where(species: "feline").collect {|pet| pet.name}
+      #puts Pet.name
+
+
+  elsif select_animal_kind == choices[1] #dogs
+      puts Pet.all.where(species: "canine").collect {|pet| pet.name}
+  elsif select_animal_kind == choices[2] #other
+      puts Pet.all.where.not(species: ["feline","canine"]).collect {|pet| pet.name}
+    else
+      #show all pets
+      puts Pet.all.collect {|pet| pet.name}
+  end
+end
+
+
+## aqui ##
+animal_type
+## aqui ##
+
+##### APAGAR #######
+>>>>>>> natany
