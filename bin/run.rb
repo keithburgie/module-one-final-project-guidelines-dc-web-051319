@@ -45,8 +45,6 @@ def greet_adoptee
     puts "Great! First, what is your email address?"
 end
 
-def 
-
 def collect_adoptee_info
     gets.chomp
 end
@@ -74,31 +72,47 @@ def greet_known_adoptee(adoptee)
     puts "Hi, #{adoptee.name}! Good to see you again."
 end
 
-def list_animals(pet, index)
-    # Create new selectable list of pets
-    # Choose a pet to see bio and have the option to adopt
-    # Have an option to go back to list
-    "#{pet.species.capitalize} ##{index+1}: #{pet.name}, a #{pet.color} #{pet.age}-year-old #{pet.gender} #{pet.breed}"
-end
-
 def animal_type
-  prompt = TTY::Prompt.new
-  animal_type_select = "What type of animal are you looking for?"
-  choices = ["Search for cats", "Search for dogs", "Search other", "All pets"]
-  select_animal_kind = prompt.select(animal_type_select, choices)
+    prompt = TTY::Prompt.new
+    animal_type_select = "What type of animal are you looking for?"
+    choices = ["Search for cats", "Search for dogs", "Search other", "All pets"]
+    select_animal_kind = prompt.select(animal_type_select, choices)
+
+    # This retrieves ALL PETS
+    # we only want to show pets that are IN the shelter
 
     if select_animal_kind == choices[0] #cats
-        Pet.all.where(species: "feline").each_with_index {|pet, index| puts list_animals(pet, index)}
+        pets = []
+        Pet.all.where(species: "feline").each_with_index {|pet, index| pets << list_animals(pet, index)}
+        animal_select(pets)
 
     elsif select_animal_kind == choices[1] #dogs
-        Pet.all.where(species: "canine").each_with_index {|pet, index| puts list_animals(pet, index)}
+        pets = []
+        Pet.all.where(species: "canine").each_with_index {|pet, index| pets << list_animals(pet, index)}
+        animal_select(pets)
 
     elsif select_animal_kind == choices[2] #other
-        Pet.all.where.not(species: ["feline","canine"]).each_with_index {|pet, index| puts list_animals(pet, index)}
+        pets = []
+        Pet.all.where.not(species: ["feline","canine"]).each_with_index {|pet, index| pets << list_animals(pet, index)}
+        animal_select(pets)
 
     else #all pets
-        Pet.all.each_with_index {|pet, index| puts list_animals(pet, index)}
+        pets = []
+        Pet.all.each_with_index {|pet, index| pets << list_animals(pet, index)}
+        animal_select(pets)
     end
+end
+
+def list_animals(pet, index)
+    # Choose a pet to see bio and have the option to adopt
+    # Have an option to go back to list
+    "#{pet.species.capitalize} ##{index+1}: #{pet.name}, a #{pet.color} #{pet.age}-year-old #{pet.gender} #{pet.breed.capitalize}"
+end
+
+def animal_select(pets)
+    prompt = TTY::Prompt.new
+    header = "Available Pets:"
+    pet_selection = prompt.select(header, pets)
 end
 
 welcome
