@@ -72,6 +72,7 @@ def greet_known_adoptee(adoptee)
     puts "Hi, #{adoptee.name}! Good to see you again."
 end
 
+<<<<<<< HEAD
 def animal_type
     prompt = TTY::Prompt.new
     animal_type_select = "What type of animal are you looking for?"
@@ -116,3 +117,57 @@ def animal_select(pets)
 end
 
 welcome
+=======
+#here_to_adopt_pet
+
+##### APAGAR ######
+def animal_type
+  prompt = TTY::Prompt.new
+  animal_type_select = "What type of animal are you looking for?"
+  choices = ["Search for cats", "Search for dogs", "Search other", "All pets"]
+  select_animal_kind = prompt.select(animal_type_select, choices)
+
+  if select_animal_kind == choices[0] #cats
+    animals_shelter_cats = get_animals("feline").collect do |pet_owner|
+      pet_owner.pet.name
+    end
+    p animals_shelter_cats
+
+  elsif select_animal_kind == choices[1] #dogs
+    animals_shelter_dogs = get_animals("canine").collect do |pet_owner|
+      pet_owner.pet.name
+    end
+    p animals_shelter_dogs
+
+  elsif select_animal_kind == choices[2] #other
+    puts Pet.all.where.not(species: ["feline","canine"]).collect {|pet| pet.name}
+
+  else #show all pets
+    puts Pet.all.collect {|pet| pet.name}
+  end
+
+
+#################################################################################
+def shelter_animals #checking if the animal have the shelter as owner
+  pets_shelter = PetOwner.all.select do |pet_owner|
+     if pet_owner.owner.kind == "Shelter"
+        pet_owner
+    end
+  end
+end
+
+def get_animals(pet_species)
+  if pet_species == "feline"
+    shelter_animals.select do |pet_owner|
+      pet_owner.pet.species == "feline"
+    end
+  elsif pet_species == "canine"
+    shelter_animals.select do |pet_owner|
+      pet_owner.pet.species == "canine"
+    end  
+  end
+end
+
+end
+animal_type
+>>>>>>> natany
