@@ -2,26 +2,19 @@ require_relative '../config/environment'
 require 'tty-prompt'
 require'pry'
 
+
 def welcome
-    puts "Welcome to (Shelter Name)"
-    reason_for_visit
-    # What's your email address?
-        # find or create user based on answer
-            # if owner exists : move on to reason for visit
-            # if owner does not exist : ask for more information and create new Owner from it
-                # :name = name, :zip_code = zip_code, :kind = "Person"
+	this_shelter = Owner.all.find_by(kind: "Shelter")
+	puts "Welcome to #{this_shelter.name}"
 end
 
-def reason_for_visit
-    prompt = TTY::Prompt.new
-    greeting = "How can we help you today?"
-    choices = ["I'm here to adopt.", "I have an animal to surrender."]
-    reason = prompt.select(greeting, choices)
-    if reason == choices[0] #adopt
-        here_to_adopt_pet
-    elsif reason == choices[1] #surrender
-        here_to_surrender_pet
-    end
+def reason_for_visit?
+	prompt = TTY::Prompt.new
+	reason = prompt.select("How can we help you today?") do |prompt|
+		prompt.choice "I'm here to adopt.", "adopt"
+		prompt.choice "I have an animal to surrender.", "surrender"
+	end
+	reason == "adopt" ? here_to_adopt_pet : here_to_surrender_pet
 end
 
 def here_to_surrender_pet
@@ -152,6 +145,12 @@ def get_animals(pet_species)
     end
 end
 
+def runner
+    welcome
+    reason_for_visit?
+end
+
 #binding.pry
-welcome
+#welcome
 #animal_type
+runner
