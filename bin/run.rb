@@ -107,16 +107,23 @@ def list_animals(pet_owner, index)
     elsif pet_owner.pet.species == "n. hollandicus"
         emoji = "🐥"
     end
-    #"#{pet_owner.pet.species.capitalize} ##{index+1}: #{pet_owner.pet.name}, a #{pet_owner.pet.color} #{pet_owner.pet.age}-year-old #{pet_owner.pet.gender} #{pet_owner.pet.breed.capitalize}"
-    "#{emoji} #{pet_owner.pet.name.capitalize}, a #{pet_owner.pet.color} #{pet_owner.pet.age}-year-old #{pet_owner.pet.gender} #{pet_owner.pet.breed.capitalize}"
 
+    animal(pet_owner)
+    
+end
+
+def animal(pet_owner)
+    description = "#{pet_owner.pet.name.capitalize}, a #{pet_owner.pet.color} #{pet_owner.pet.age}-year-old #{pet_owner.pet.gender} #{pet_owner.pet.breed.capitalize}"
+    return pet_owner.pet
 end
 
 def animal_select(pets)
     prompt = TTY::Prompt.new
     header = "Available Pets:"
     pet_selection = prompt.select(header, pets)
+    binding.pry
 end
+
 
 
 #################################################################################
