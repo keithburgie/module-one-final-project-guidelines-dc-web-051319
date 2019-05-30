@@ -8,20 +8,34 @@ def welcome
 	puts "Welcome to #{this_shelter.name}"
 end
 
+# def welcome(zip)
+# 	this_shelter = Owner.all.find_by(kind: "Shelter", zip_code: zip)
+# 	puts "Welcome to #{this_shelter.name}"
+# end
+
 
 def reason_for_visit?
 	prompt = TTY::Prompt.new
-		reason = prompt.select("How can we help you today?") do |prompt|
-			prompt.choice "I'm here to adopt.", "adopt"
-			prompt.choice "I have an animal to surrender.", "surrender"
-		end
-		reason == "adopt" ? here_to_adopt_pet : here_to_surrender_pet
+	reason = prompt.select("How can we help you today?") do |prompt|
+		prompt.choice "I'm here to adopt.", "adopt"
+		prompt.choice "I have an animal to surrender.", "surrender"
+	end
+	reason == "adopt" ? here_to_adopt_pet : here_to_surrender_pet
+end
+
+
+def here_to_adopt_pet
+	prompt = TTY::Prompt.new
+	email_address = prompt.ask('"Great! First, what is your email?') { |q| q.validate :email }
+	adoptee = Owner.find_or_create_by({email: email_address, kind: "Person"})
+	find_or_create_adoptee(adoptee)
+	adoption_type
 end
 
 
 def here_to_surrender_pet
 	prompt = TTY::Prompt.new
-		response = prompt.yes?("Sorry, we're full! Would you like a new pet instead?")
+	response = prompt.yes?("Sorry, we're full! Would you like a new pet instead?")
 	if response == true 
 		here_to_adopt_pet
 	else 
@@ -30,33 +44,25 @@ def here_to_surrender_pet
 end
 
 
-def here_to_adopt_pet
-	prompt = TTY::Prompt.new
-		email_address = prompt.ask('"Great! First, what is your email?') { |q| q.validate :email }
-	adoptee = Owner.find_or_create_by({email: email_address, kind: "Person"})
-	find_or_create_adoptee(adoptee)
-	adoption_type
-end
-
-
 def find_or_create_adoptee(adoptee)
-    if adoptee.name #Adoptee is known if they have a name
-        greet_known_adoptee(adoptee)
-    else #Adoptee is not known if no name found
-        build_new_adoptee(adoptee)
-    end
+	if adoptee.name
+		# If adoptee has name, greet them
+		greet_known_adoptee(adoptee)
+	else
+		# If adoptee does not have name, create them
+		build_new_adoptee(adoptee)
+	end
 end
 
+
+def greet_known_adoptee(adoptee)
+	puts "Hi, #{adoptee.name}! Nice to see you again."
+end
 
 def build_new_adoptee(adoptee)
 	name = prompt.ask("Hey, you're new here! What's your name?", required: true)
 	adoptee.name = name
 	adoptee.save
-end
-
-
-def greet_known_adoptee(adoptee)
-	puts "Hi, #{adoptee.name}! Good to see you again."
 end
 
 
@@ -70,36 +76,31 @@ def adoption_type
 	end
 
 	pets = []
+
+	# Loop through animals available at this shelter
 	get_animals(animal_search).each_with_index do |pet_owner, index|
-		pets << list_animals(pet_owner, index)
+		pet_obj = pet_owner.pet
+		details = pet_info(pet_owner, index)
+		# Add animal description and object to [pets]
+		pets << {name: details, value: pet_obj}
 	end
+	# Show all pets from search
+	pet_selector(pets)
 
-	#show all pets from search
-	animal_select(pets)
 end
 
 
-def animal_select(pets)
-	prompt = TTY::Prompt.new
-	header = "Available Pets:"
-	pet_selection = prompt.select(header, pets)
-end
-
-
-def list_animals(pet_owner, index)
-	# Choose a pet to see bio and have the option to adopt
-		# Have an option to go back to list
-		# emoji = ""
-		# 	if pet_owner.pet.species == "feline"
-		# 			emoji = "🐱"
-		# 	elsif pet_owner.pet.species == "canine"
-		# 			emoji = "🐶"
-		# 	elsif pet_owner.pet.species == "n. hollandicus"
-		# 			emoji = "🐥"
-		# end
-		#"#{pet_owner.pet.species.capitalize} ##{index+1}: #{pet_owner.pet.name}, a #{pet_owner.pet.color} #{pet_owner.pet.age}-year-old #{pet_owner.pet.gender} #{pet_owner.pet.breed.capitalize}"
-	#"#{emoji} #{pet_owner.pet.name.capitalize}, a #{pet_owner.pet.color} #{pet_owner.pet.age}-year-old #{pet_owner.pet.gender} #{pet_owner.pet.breed.capitalize}"
-	pet_owner.pet
+def pet_info(pet_owner, index)
+	pet = pet_owner.pet
+	icon = ""
+	if pet_owner.pet.species == "feline"
+		icon = "🐱"
+	elsif pet_owner.pet.species == "canine"
+		icon = "🐶"
+	elsif pet_owner.pet.species == "n. hollandicus"
+		icon = "🐥"
+	end
+	"#{icon} #{pet.name.capitalize}, a #{pet.color} #{pet.age}-year-old #{pet.gender} #{pet.breed.capitalize}"
 end
 
 
@@ -134,6 +135,51 @@ def get_animals(pet_species)
 			pet_owner.pet
 		end
 	end
+end
+
+def pet_selector(pets)
+	prompt = TTY::Prompt.new
+	pet_selection = prompt.select("Available Pets:", pets)
+	get_the_selected_pet(pet_selection)
+end
+
+def get_the_selected_pet(pet_selection)
+		pet_selection
+		binding.pry
+  	prompt = TTY::Prompt.new
+      response = prompt.yes?("Adopt this pet?")
+    if response == true
+      #puts "Aggree with the contract"
+    resposta_adoption_sim
+    else
+    adoption_type
+    end
+end
+
+def resposta_adoption_sim
+  prompt = TTY::Prompt.new
+  contract_agreement = prompt.yes?('Agree with the contract') do |q|
+    q.suffix 'Agree/Disagree'
+    q.positive 'Agree'
+    q.negative 'Disagree'
+    q.convert -> (input) { !input.match(/^agree$/i).nil? }
+  end
+  if contract_agreement == true
+    puts "muito bom"
+    adopting_pet
+  else
+    adoption_type
+  end
+end
+
+def adopting_pet#owner/pet
+  animal_select = pet_selection
+  pet_selection.each do |pet|
+    pet.owner
+    #owner = find_or_create_adoptee
+    # binding.pry
+    #Pet.update
+  end
 end
 
 
