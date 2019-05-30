@@ -69,7 +69,7 @@ end
 def adoption_type
   prompt = TTY::Prompt.new
 	animal_search = prompt.select("What type of animal are you looking for?") do |prompt|
-		prompt.choice "Search for cats.", "feline"
+		prompt.choice "Search for cats", "feline"
 		prompt.choice "Search for dogs", "canine"
 		prompt.choice "Search other animals", "other"
 		prompt.choice "Search all animals", "all"
@@ -144,21 +144,25 @@ def pet_selector(pets)
 end
 
 def get_the_selected_pet(pet_selection)
-		pet_selection
-		binding.pry
-  	prompt = TTY::Prompt.new
-      response = prompt.yes?("Adopt this pet?")
-    if response == true
-      #puts "Aggree with the contract"
-    resposta_adoption_sim
-    else
-    adoption_type
-    end
+	name = pet_selection.name
+	breed = pet_selection.breed
+	status = pet_selection.status
+
+	prompt = TTY::Prompt.new
+	puts "#{name} is #{status}!"
+	response = prompt.yes?("Adopt #{name} the #{breed}?")
+	if response == true
+		#puts "Agree with the contract"
+		resposta_adoption_sim
+		else
+		adoption_type
+	end
 end
 
+# adoption answer = agree
 def resposta_adoption_sim
   prompt = TTY::Prompt.new
-  contract_agreement = prompt.yes?('Agree with the contract') do |q|
+  contract_agreement = prompt.yes?('Agree with the contract?') do |q|
     q.suffix 'Agree/Disagree'
     q.positive 'Agree'
     q.negative 'Disagree'
