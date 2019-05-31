@@ -22,23 +22,29 @@ def reason_for_visit?
 	reason == "adopt" ? here_to_adopt : here_to_surrender
 end
 
+def guest_sign_in
+    prompt = TTY::Prompt.new
+    guest_email = prompt.ask('Great! First, what is your email?') { |q| q.validate :email }
+    guest = Owner.find_or_create_by({email: guest_email, kind: "Person"})
+    return guest
+end
+
 def here_to_adopt
-	prompt = TTY::Prompt.new
-	email_address = prompt.ask('Great! First, what is your email?') { |q| q.validate :email }
-	adoptee = Owner.find_or_create_by({email: email_address, kind: "Person"})
-	#binding.pry
-	find_or_create_adoptee(adoptee)
-	choose_pet_type(adoptee)
+    adoptee = guest_sign_in
+    find_or_create_adoptee(adoptee)
+    choose_pet_type(adoptee)
 end
 
 def here_to_surrender
-	prompt = TTY::Prompt.new
-	changed_mind = prompt.yes?("Sorry, we're full! Would you like a new pet instead?")
-	if changed_mind == true
-		here_to_adopt
-	else
-		puts "Okay, goodbye!"
-	end
+    surrendee = guest_sign_in
+		# prompt = TTY::Prompt.new
+		#changed_mind = prompt.yes?("Sorry, we're full! Would you like a new pet instead?")
+		# if changed_mind == true
+		# 	here_to_adopt
+		# else
+		# 	puts "Okay, goodbye!"
+		# end
+		surrending_pet_reason(surrendee)
 end
 
 
@@ -242,6 +248,27 @@ def transfer_ownership(selected_pet, adoptee)
 end
 
 ######################################################################
+# def surrending_pet(new_pet, adoptee)
+#
+#
+# end
+
+def surrending_pet_reason(adoptee)
+
+	prompt = TTY::Prompt.new
+	reason = prompt.ask("What's the reason you're surrending this pet?", required: true)
+	#pet_name = prompt.ask("What is the pet's name?", required: true)
+	# PetOwner.all.select do |pet_owner|
+	# adoptee_pets = pet_owner.owner_id == adoptee.id
+			#pet_owner.update(:current? => false)
+#end
+		#binding.pry
+end
+
+
+
+
+
 ######################################################################
 
 def runner
