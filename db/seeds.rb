@@ -7,7 +7,7 @@ require_relative "../config/environment.rb"
 # wilke.doctors << turk
 # wilke.doctors << jd
 
-owner1 = Owner.find_or_create_by({name: "Animal Shelter", email: "info@animalshelter.com", kind: "Shelter"})
+owner1 = Owner.find_or_create_by({name: "Flatiron Animal Shelter", email: "info@animalshelter.com", kind: "Shelter"})
 owner2 = Owner.find_or_create_by({name: "Keith", email: "krburgie@gmail.com", kind: "Person"})
 owner3 = Owner.find_or_create_by({name: "Natany", email: "natanycaxeta@icloud.com", kind: "Person"})
 
@@ -20,6 +20,7 @@ pet6 = Pet.find_or_create_by({name: "Cheese", breed: "dachshund", age: "1", stat
 pet7 = Pet.find_or_create_by({name: "Selfie", breed: "dachshund", age: "1", status: "ready for adoption", color: "black", size: "small", fee: "50", bio: "Lorem ipsum dolor sit amet.", gender: "female", species: "canine"})
 pet8 = Pet.find_or_create_by({name: "Refri", breed: "dachshund", age: "1", status: "ready for adoption", color: "brown", size: "small", fee: "50", bio: "Lorem ipsum dolor sit amet.", gender: "male", species: "canine"})
 pet9 = Pet.find_or_create_by({name: "Suco", breed:"cockatiel", age: "2", status: "ready for adoption", color: "gray", size:"nil", fee: "50", bio: "Lorem ipsum dolor sit amet.", gender: "male", species: "n. hollandicus"})
+pet10 = Pet.find_or_create_by({name: "Rex", breed:"tyrannosaurus", age: "35", status: "ready for adoption", color: "greenish", size:"nil", fee: "50", bio: "Lorem ipsum dolor sit amet.", gender: "male", species: "dinosaur"})
 
 pet_owner1 = PetOwner.find_or_create_by({pet: pet1, owner: owner1, current?: true})
 pet_owner2 = PetOwner.find_or_create_by({pet: pet2, owner: owner1, current?: true})
@@ -30,6 +31,7 @@ pet_owner6 = PetOwner.find_or_create_by({pet: pet6, owner: owner1, current?: tru
 pet_owner7 = PetOwner.find_or_create_by({pet: pet7, owner: owner1, current?: true})
 pet_owner8 = PetOwner.find_or_create_by({pet: pet8, owner: owner1, current?: true})
 pet_owner9 = PetOwner.find_or_create_by({pet: pet9, owner: owner1, current?: true})
+pet_owner10 = PetOwner.find_or_create_by({pet: pet10, owner: owner2, current?: true})
 
 
 

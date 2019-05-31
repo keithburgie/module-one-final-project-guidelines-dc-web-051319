@@ -24,28 +24,29 @@ end
 
 ########################
 
-def guest_sign_in
-	prompt = TTY::Prompt.new
-	guest_email = prompt.ask('Great! First, what is your email?') { |q| q.validate :email }
-	guest = Owner.find_or_create_by({email: guest_email, kind: "Person"})
-	find_or_create_guest(guest)
-end
+	def guest_sign_in
+		prompt = TTY::Prompt.new
+		guest_email = prompt.ask('Great! First, what is your email?') { |q| q.validate :email }
+		guest = Owner.find_or_create_by({email: guest_email, kind: "Person"})
+		find_or_create_guest(guest)
+		return guest
+	end
 
-def find_or_create_guest(guest)
-	# If guest has a name, they are in the database
-	guest.name ? greet_known_guest(guest) : build_new_guest(guest)
-end
+	def find_or_create_guest(guest)
+		# If guest has a name, they are in the database
+		guest.name ? greet_known_guest(guest) : build_new_guest(guest)
+	end
 
-def greet_known_guest(guest)
-	puts "Hi, #{guest.name}! Nice to see you again."
-end
+	def greet_known_guest(guest)
+		puts "Hi, #{guest.name}! Nice to see you again."
+	end
 
-def build_new_guest(guest)
-	prompt = TTY::Prompt.new
-	name = prompt.ask("Hey, you're new here! What's your name?", required: true)
-	guest.name = name
-	guest.save
-end
+	def build_new_guest(guest)
+		prompt = TTY::Prompt.new
+		name = prompt.ask("Hey, you're new here! What's your name?", required: true)
+		guest.name = name
+		guest.save
+	end
 
 ########################
 
@@ -57,13 +58,13 @@ end
 def here_to_surrender
 	surrendee = guest_sign_in
 	prompt = TTY::Prompt.new
-	surrendering_pet_reason
-	# changed_mind = prompt.yes?("Sorry, we're full! Would you like a new pet instead?")
-	# if changed_mind == true 
-	# 	here_to_adopt
-	# else 
-	# 	puts "Okay, goodbye!"
-	# end
+	#surrendering_pet_reason
+	changed_mind = prompt.yes?("Sorry, we're full! Would you like a new pet instead?")
+	if changed_mind == true 
+		here_to_adopt
+	else 
+		puts "Okay, goodbye!"
+	end
 end
 
 ########################
@@ -165,7 +166,7 @@ def get_animals(pet_species)
 end
 
 
-# Show selectable list of chosen pet types
+# Show selectable list pets by type selected
 def pet_selector(pets, adoptee)
 	prompt = TTY::Prompt.new
 	selected_pet = prompt.select("Available Pets:", pets)
@@ -218,7 +219,7 @@ def surrendering_pet_reason
     # adoptee_pets = pet_owner.owner_id == adoptee.id
             #pet_owner.update(:current? => false)
 #end
-        #binding.pry
+      
 end
 
 ########################
@@ -227,8 +228,6 @@ def transfer_ownership(selected_pet, adoptee)
 	shelter = Owner.all.find{|owner|owner.id == 1 && owner.kind == "Shelter"}
 	adoptee = adoptee
 	pet = selected_pet
-
-	puts "#{adoptee.name} is about to adopt #{pet.name} from #{shelter.name}"
 	
 	# set shelter relationship to current?: false
 	PetOwner.all.select do |pet_owner|
@@ -239,6 +238,12 @@ def transfer_ownership(selected_pet, adoptee)
 
 	# add new row to PetOwner table with relationship and current?: true
 	PetOwner.create(:pet_id=>pet.id, :owner_id=>adoptee.id, :current? => true)
+
+	# Print "{{New Owner}} has adopted {{Pet's Name}} from {{Shelter Name}}
+	prompt = TTY::Prompt.new
+	prompt.warn("\n#{adoptee.name} has adopted #{pet.name} from #{shelter.name}!\n")
+	
+	return
 end
 
 ########################
@@ -248,7 +253,6 @@ def runner
 		reason_for_visit?
 end
 
-#binding.pry
 #welcome
 #choose_pet_type
 runner
