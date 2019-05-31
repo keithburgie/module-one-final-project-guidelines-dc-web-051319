@@ -26,7 +26,7 @@ def here_to_adopt
 	prompt = TTY::Prompt.new
 	email_address = prompt.ask('Great! First, what is your email?') { |q| q.validate :email }
 	adoptee = Owner.find_or_create_by({email: email_address, kind: "Person"})
-	binding.pry
+	#binding.pry
 	find_or_create_adoptee(adoptee)
 	choose_pet_type(adoptee)
 end
