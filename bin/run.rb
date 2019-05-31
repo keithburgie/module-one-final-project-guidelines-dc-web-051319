@@ -24,18 +24,20 @@ end
 
 def here_to_adopt
 	prompt = TTY::Prompt.new
-	email_address = prompt.ask('"Great! First, what is your email?') { |q| q.validate :email }
+	email_address = prompt.ask('Great! First, what is your email?') { |q| q.validate :email }
 	adoptee = Owner.find_or_create_by({email: email_address, kind: "Person"})
+	binding.pry
 	find_or_create_adoptee(adoptee)
 	choose_pet_type
+
 end
 
 def here_to_surrender
 	prompt = TTY::Prompt.new
 	changed_mind = prompt.yes?("Sorry, we're full! Would you like a new pet instead?")
-	if changed_mind == true 
+	if changed_mind == true
 		here_to_adopt
-	else 
+	else
 		puts "Okay, goodbye!"
 	end
 end
@@ -79,7 +81,7 @@ def choose_pet_type
 	get_animals(choose_pet_type).each_with_index do |pet_owner, index|
 		pet_obj = pet_owner.pet
 		details = pet_info(pet_owner, index)
-		
+
 		# Add animal description and object to [pets]
 		pets << {name: details, value: pet_obj}
 	end
@@ -92,7 +94,7 @@ def choose_pet_type
 end
 
 
-# Create pet description for 
+# Create pet description for
 def pet_info(pet_owner, index)
 	pet = pet_owner.pet
 	case pet.species
@@ -123,12 +125,12 @@ def pet_info(pet_owner, index)
 end
 
 
-def shelter_animals 
+def shelter_animals
 	pets_shelter = PetOwner.all.select do |pet_owner|
-		
+
 		#if the pet is currently owned by the shelter
 		if pet_owner.owner.kind == "Shelter"
-			
+
 			# Return pet_owner relationship
 			pet_owner
 		end
@@ -142,15 +144,15 @@ def get_animals(pet_species)
 		when "feline" || "cat"
 			# Show list of shelter cats
 			shelter_animals.select {|pet_owner| pet_owner.pet.species == "feline"}
-		
+
 		when "canine" || "dog"
 			# Show list of shelter dogs
 			shelter_animals.select {|pet_owner| pet_owner.pet.species == "canine"}
-		
+
 		when "other"
 			# Show list of pets who are not cats or dogs
 			shelter_animals.select {|pet_owner| pet_owner.pet.species != "feline" && pet_owner.pet.species != "canine"}
-		
+
 		else
 			# Show list of all pets
 			shelter_animals.select {|pet_owner| pet_owner.pet}
@@ -170,8 +172,8 @@ end
 
 # Display single pet shown from pet_selector
 def get_the_selected_pet(selected_pet)
-	if selected_pet == "back" 
-		choose_pet_type 
+	if selected_pet == "back"
+		choose_pet_type
 	end
 
 	name = selected_pet.name
