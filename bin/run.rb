@@ -63,7 +63,9 @@ def here_to_surrender
 	if changed_mind == true 
 		here_to_adopt
 	else 
-		puts "Okay, goodbye!"
+		prompt = TTY::Prompt.new
+		prompt.warn("\nOkay, goodbye!\n")
+		return
 	end
 end
 
@@ -242,7 +244,6 @@ def transfer_ownership(selected_pet, adoptee)
 	# Print "{{New Owner}} has adopted {{Pet's Name}} from {{Shelter Name}}
 	prompt = TTY::Prompt.new
 	prompt.warn("\n#{adoptee.name} has adopted #{pet.name} from #{shelter.name}!\n")
-	
 	return
 end
 
