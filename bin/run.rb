@@ -22,46 +22,51 @@ def reason_for_visit?
 	reason == "adopt" ? here_to_adopt : here_to_surrender
 end
 
-def here_to_adopt
+########################
+
+def guest_sign_in
 	prompt = TTY::Prompt.new
-	email_address = prompt.ask('Great! First, what is your email?') { |q| q.validate :email }
-	adoptee = Owner.find_or_create_by({email: email_address, kind: "Person"})
-	find_or_create_adoptee(adoptee)
+	guest_email = prompt.ask('Great! First, what is your email?') { |q| q.validate :email }
+	guest = Owner.find_or_create_by({email: guest_email, kind: "Person"})
+	find_or_create_guest(guest)
+end
+
+def find_or_create_guest(guest)
+	# If guest has a name, they are in the database
+	guest.name ? greet_known_guest(guest) : build_new_guest(guest)
+end
+
+def greet_known_guest(guest)
+	puts "Hi, #{guest.name}! Nice to see you again."
+end
+
+def build_new_guest(guest)
+	prompt = TTY::Prompt.new
+	name = prompt.ask("Hey, you're new here! What's your name?", required: true)
+	guest.name = name
+	guest.save
+end
+
+########################
+
+def here_to_adopt
+	adoptee = guest_sign_in
 	choose_pet_type(adoptee)
 end
 
 def here_to_surrender
+	surrendee = guest_sign_in
 	prompt = TTY::Prompt.new
-	changed_mind = prompt.yes?("Sorry, we're full! Would you like a new pet instead?")
-	if changed_mind == true 
-		here_to_adopt
-	else 
-		puts "Okay, goodbye!"
-	end
+	surrendering_pet_reason
+	# changed_mind = prompt.yes?("Sorry, we're full! Would you like a new pet instead?")
+	# if changed_mind == true 
+	# 	here_to_adopt
+	# else 
+	# 	puts "Okay, goodbye!"
+	# end
 end
 
-
-def find_or_create_adoptee(adoptee)
-	if adoptee.name
-		# If adoptee has name, greet them
-		greet_known_adoptee(adoptee)
-	else
-		# If adoptee does not have name, create them
-		build_new_adoptee(adoptee)
-	end
-end
-
-def greet_known_adoptee(adoptee)
-	puts "Hi, #{adoptee.name}! Nice to see you again."
-end
-
-def build_new_adoptee(adoptee)
-	prompt = TTY::Prompt.new
-	name = prompt.ask("Hey, you're new here! What's your name?", required: true)
-	adoptee.name = name
-	adoptee.save
-end
-
+########################
 
 # Choose type of animal to adopt
 def choose_pet_type(adoptee)
@@ -205,11 +210,18 @@ def agree_to_adopt(selected_pet, adoptee)
   agree_to_contract == true ? transfer_ownership(selected_pet, adoptee) : choose_pet_type(adoptee)
 end
 
-######################################################################
-######################################################################
+def surrendering_pet_reason
+    prompt = TTY::Prompt.new
+    reason = prompt.ask("What's the reason you're surrending this pet?", required: true)
+    #pet_name = prompt.ask("What is the pet's name?", required: true)
+    # PetOwner.all.select do |pet_owner|
+    # adoptee_pets = pet_owner.owner_id == adoptee.id
+            #pet_owner.update(:current? => false)
+#end
+        #binding.pry
+end
 
-# May have to pass more than just selected_pet
-	# def transfer_ownership(selected_pet, current_owner, new_owner)
+########################
 
 def transfer_ownership(selected_pet, adoptee)
 	shelter = Owner.all.find{|owner|owner.id == 1 && owner.kind == "Shelter"}
@@ -227,25 +239,13 @@ def transfer_ownership(selected_pet, adoptee)
 
 	# add new row to PetOwner table with relationship and current?: true
 	PetOwner.create(:pet_id=>pet.id, :owner_id=>adoptee.id, :current? => true)
-	
-
-	#PetOwner.all.select{|pet_owner| pet_owner.pet_id == 4 && pet_owner.owner_id == 1}
-	#PetOwner.all.select{|pet_owner| pet_owner.owner.kind == "Shelter"}
-
-  # selected_pet.each do |pet|
-  #   pet.owner
-  #   #owner = find_or_create_adoptee
-  #   # binding.pry
-  #   #Pet.update
-  # end
 end
 
-######################################################################
-######################################################################
+########################
 
 def runner
     welcome
-    reason_for_visit?
+		reason_for_visit?
 end
 
 #binding.pry
