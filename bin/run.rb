@@ -24,10 +24,10 @@ end
 
 def here_to_adopt
 	prompt = TTY::Prompt.new
-	email_address = prompt.ask('"Great! First, what is your email?') { |q| q.validate :email }
+	email_address = prompt.ask('Great! First, what is your email?') { |q| q.validate :email }
 	adoptee = Owner.find_or_create_by({email: email_address, kind: "Person"})
 	find_or_create_adoptee(adoptee)
-	choose_pet_type
+	choose_pet_type(adoptee)
 end
 
 def here_to_surrender
@@ -56,6 +56,7 @@ def greet_known_adoptee(adoptee)
 end
 
 def build_new_adoptee(adoptee)
+	prompt = TTY::Prompt.new
 	name = prompt.ask("Hey, you're new here! What's your name?", required: true)
 	adoptee.name = name
 	adoptee.save
@@ -63,7 +64,7 @@ end
 
 
 # Choose type of animal to adopt
-def choose_pet_type
+def choose_pet_type(adoptee)
   prompt = TTY::Prompt.new
 	choose_pet_type = prompt.select("What type of pet are you looking for?") do |prompt|
 		prompt.choice "Search for cats", "feline"
@@ -82,13 +83,14 @@ def choose_pet_type
 		
 		# Add animal description and object to [pets]
 		pets << {name: details, value: pet_obj}
+
 	end
 
 	# Add a back button to list
 	pets << {name: "<< Go Back", value: "back"}
 
 	# Show all pets from search
-	pet_selector(pets)
+	pet_selector(pets, adoptee)
 end
 
 
@@ -127,7 +129,7 @@ def shelter_animals
 	pets_shelter = PetOwner.all.select do |pet_owner|
 		
 		#if the pet is currently owned by the shelter
-		if pet_owner.owner.kind == "Shelter"
+		if pet_owner.owner.kind == "Shelter" && pet_owner.current? == true
 			
 			# Return pet_owner relationship
 			pet_owner
@@ -159,25 +161,25 @@ end
 
 
 # Show selectable list of chosen pet types
-def pet_selector(pets)
+def pet_selector(pets, adoptee)
 	prompt = TTY::Prompt.new
 	selected_pet = prompt.select("Available Pets:", pets)
 
 	# Show individual pet selected from list
-	get_the_selected_pet(selected_pet)
+	get_the_selected_pet(selected_pet, adoptee)
 end
 
 
 # Display single pet shown from pet_selector
-def get_the_selected_pet(selected_pet)
+def get_the_selected_pet(selected_pet, adoptee)
 	if selected_pet == "back" 
-		choose_pet_type 
+		choose_pet_type(adoptee)
+	else
+		name = selected_pet.name
+		breed = selected_pet.breed
+		status = selected_pet.status
+		puts "#{name} is #{status}!"
 	end
-
-	name = selected_pet.name
-	breed = selected_pet.breed
-	status = selected_pet.status
-	puts "#{name} is #{status}!"
 
 	prompt = TTY::Prompt.new
 	adopt_this_pet = prompt.select("Adopt #{name} the #{breed}?") do |prompt|
@@ -186,12 +188,12 @@ def get_the_selected_pet(selected_pet)
 	end
 
 	# If yes, serve adoption contract. Else, go back to adoptions
-	adopt_this_pet == true ? agree_to_adopt(selected_pet) : choose_pet_type
+	adopt_this_pet == true ? agree_to_adopt(selected_pet, adoptee) : choose_pet_type(adoptee)
 end
 
 
 # Last step before transfer_ownership
-def agree_to_adopt(selected_pet)
+def agree_to_adopt(selected_pet, adoptee)
 	puts contract = "\nI hereby agree that the above described animal is being adopted by me solely as a pet for myself and/or my immediate family. I agree that I will not sell, give away or otherwise dispose of said animal to any persons, dealer, retailer, auction, institute or any other entity for any reason. If at a later date I am unable or unwilling to keep this pet, I agree to first contact the above described current owner and give them the option to reclaim said pet at no charge.\n\n"
 
   prompt = TTY::Prompt.new
@@ -200,7 +202,7 @@ def agree_to_adopt(selected_pet)
 		prompt.choice "Disagree", false
 	end
 
-  agree_to_contract == true ? transfer_ownership(selected_pet) : choose_pet_type
+  agree_to_contract == true ? transfer_ownership(selected_pet, adoptee) : choose_pet_type(adoptee)
 end
 
 ######################################################################
@@ -209,13 +211,23 @@ end
 # May have to pass more than just selected_pet
 	# def transfer_ownership(selected_pet, current_owner, new_owner)
 
-def transfer_ownership(selected_pet)
-	puts "This is where we transfer pet ownership"
-	current_owner = ""
-	#1. match {{selected_pet.id}} to {{PetOwner.pet_id}}
-	#2. set {{PetOwner.owner_id}} to {{new_owner.id}}
-	#3. add new row to PetOwner table with relationship and current?: true
-	#4. set previous PetOwner relationship to current?: false
+def transfer_ownership(selected_pet, adoptee)
+	shelter = Owner.all.find{|owner|owner.id == 1 && owner.kind == "Shelter"}
+	adoptee = adoptee
+	pet = selected_pet
+
+	puts "#{adoptee.name} is about to adopt #{pet.name} from #{shelter.name}"
+	
+	# set shelter relationship to current?: false
+	PetOwner.all.select do |pet_owner|
+		if pet_owner.pet_id == selected_pet.id
+			pet_owner.update(:current? => false)
+		end
+	end
+
+	# add new row to PetOwner table with relationship and current?: true
+	PetOwner.create(:pet_id=>pet.id, :owner_id=>adoptee.id, :current? => true)
+	
 
 	#PetOwner.all.select{|pet_owner| pet_owner.pet_id == 4 && pet_owner.owner_id == 1}
 	#PetOwner.all.select{|pet_owner| pet_owner.owner.kind == "Shelter"}
