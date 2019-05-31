@@ -173,13 +173,13 @@ end
 
 # Display single pet shown from pet_selector
 def get_the_selected_pet(selected_pet, adoptee)
-	if selected_pet == "back"
-		choose_pet_type(adoptee)
-	else
+	if selected_pet != "back"
 		name = selected_pet.name
 		breed = selected_pet.breed
 		status = selected_pet.status
 		puts "#{name} is #{status}!"
+	else
+		choose_pet_type(adoptee)
 	end
 
 	prompt = TTY::Prompt.new
