@@ -253,7 +253,7 @@ end
 #
 # end
 
-def surrending_pet_reason(adoptee)
+def surrending_pet_reason
 
 	prompt = TTY::Prompt.new
 	reason = prompt.ask("What's the reason you're surrending this pet?", required: true)
