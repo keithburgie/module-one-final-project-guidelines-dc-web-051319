@@ -9,3 +9,11 @@ Sign in with your email address. If you've been here before, we have a history o
 If you're adopting, browse all of our available pets, choose one you like, sign our adoption agreement, and take your pet home!
 
 If you're surrendering, tell us a little bit about your pet and we'll be happy to take it off your hands.
+
+## Install Instructions
+
+## Contributors Guide
+Natany Caxeta & Keith Burgie
+
+## License
+(Link to license)
